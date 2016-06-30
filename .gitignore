@@ -1,10 +1,7 @@
 .DS_STORE
 
 node_modules/*
-dist/css
-dist/fonts
-dist/images
-dist/lang
-dist/lib
-dist/o2c.html
+
+dist/*
+!dist/spec/
 .idea/
