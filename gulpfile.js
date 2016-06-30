@@ -119,26 +119,17 @@ function _copy() {
     .src(['./src/main/html/**/*'])
     .pipe(gulp.dest('./dist'))
     .on('error', log);
-  
-}
-gulp.task('dev-copy', ['dev-less', 'copy-local-specs'], _copy);
 
-gulp.task('copy-local-specs', function () {
-  // copy the test specs
-  return gulp
-    .src(['./test/specs/**/*'])
-    .pipe(gulp.dest('./dist/specs'))
-    .on('error', log);
-});
+}
+gulp.task('dev-copy', ['dev-less'], _copy);
 
 /**
  * Watch for changes and recompile
  */
-gulp.task('watch', ['copy-local-specs'], function() {
+gulp.task('watch', function() {
   return watch([
     './src/**/*.{js,less,handlebars}',
-    './src/main/html/*.html',
-    './test/specs/**/*.{json,yaml}'
+    './src/main/html/*.html'
     ],
     function() {
       gulp.start('dev-dist');
