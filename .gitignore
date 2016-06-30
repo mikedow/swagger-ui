@@ -9,10 +9,14 @@ lib/*.zip
 version.properties
 .sass-cache
 swagger-ui.sublime-workspace
-.idea
 .project
 node_modules/*
 /nbproject/private/
-dist/specs/
 test/specs/local/
-dist/
+dist/css
+dist/fonts
+dist/images
+dist/lang
+dist/lib
+dist/o2c.html
+.idea/
