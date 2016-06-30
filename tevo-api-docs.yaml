@@ -1,0 +1,386 @@
+swagger: '2.0'
+info:
+  version: 9.0.0
+  title: Ticket Evolution
+  description: |
+    Common use cases documented here.
+host: api.ticketevolution.com
+basePath: /v9
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+tags:
+  - name: events
+    description: Event information.
+  - name: tickets
+    description: All the inventory on our exchange.
+  - name: venues
+    description: Arenas, Theaters, etc.
+  - name: performers
+    description: Teams, Musicians, etc.
+paths:
+  /events:
+    get:
+      tags:
+        - events
+      description: >
+
+        # Searching for Events
+
+        To get started you will probably want to get a list of events.  Often
+        you will want to search by:
+
+        * location
+
+        * category
+
+        * performer
+
+        * date
+
+      responses:
+        '200':
+          description: aaa
+          schema:
+            $ref: '#/definitions/EventsResponse'
+    parameters:
+
+    - name: by_time
+      in: query
+      required: false
+      type: string
+      description:
+        Can be either `day` or `night`.
+        Show only events whose start time is during the day (between 4am-4pm) or night (otherwise).
+
+    - name: category_id
+      in: query
+      required: false
+      type: integer
+      description:
+        Show only events in this category (does not include sub-categories)
+
+    - name: category_tree
+      in: query
+      required: false
+      type: boolean
+      description:
+        When true and used in conjunction with `category_id` events in sub-categories of the `category_id` will be included.
+
+    - name: city_state
+      in: query
+      required: false
+      type: string
+      description:
+        Infer lat and lon by location of city and state for geolocated searches.
+        Control size of geolocation area using `within`.
+        Example `Austin, TX`.
+
+    - name: lat
+      in: query
+      required: false
+      type: number
+      format: float
+      description:
+        Latitude & longitude for geolocated searches. Control size of geolocation area using `within`. Must supply both.
+
+    - name: lon
+      in: query
+      required: false
+      type: number
+      format: float
+      description:
+        Latitude & longitude for geolocated searches. Control size of geolocation area using `within`. Must supply both.
+
+    - name: min_and_max_price
+      in: query
+      required: false
+      type: boolean
+      description:
+        If `true`, the server will provide additional pricing info.
+        `avg_price`, `sum_price`, `median_price`, `min_price` & `max_price`.
+
+    - name: name
+      in: query
+      required: false
+      type: string
+      description:
+        The **exact** name of the event.
+        Use the `q` param for fulltext search.
+
+    - name: occurs_at
+      in: query
+      required: false
+      type: string
+      format: iso8601
+      description:
+        The time the event occurs at, in the timezone of the event.
+        You can use
+        `occurs_at.lt`
+        `occurs_at.gt`
+        `occurs_at.lte`
+        `occurs_at.gte`
+        `occurs_at.eq`
+        `occurs_at.not_eq`
+        To search where the value is less than, greater than or equal to, equal to, not equal, etc.
+
+    - name: only_with_tickets
+      in: query
+      required: false
+      type: boolean
+      description:
+        Show only events that have inventory.
+
+    - name: order_by
+      in: query
+      required: false
+      type: string
+      description:
+        Pass in the parameter that you want to order by and the sorting order. E.g. `events.popularity_score%20DESC`.  It is literal SQL and the space should be URL encoded to `%20`.
+    - name: performer_id
+      in: query
+      required: false
+      type: integer
+      description:
+        Show only events for this performer.
+
+    - name: postal_code
+      in: query
+      required: false
+      type: string
+      description:
+        Infer lat and lon by location of postal code for geolocated searches.
+        Control size of geolocation area using `within`.
+
+    - name: primary_performer
+      in: query
+      required: false
+      type: boolean
+      description:
+        When used with `performer_id` this will require that the `performer_id` is marked as a primary performer for the event.
+
+    - name: q
+      in: query
+      required: false
+      type: string
+      description:
+        Full-text search events
+
+    - name: venue_id
+      in: query
+      required: false
+      type: integer
+      description:
+        Venue at which the event occurs.
+
+    - name: within
+      in: query
+      required: false
+      type: number
+      format: float
+      description:
+        Radius in miles for geolocated searches (default is 15 miles).
+      default: 15
+
+  /tickets:
+    get:
+      tags:
+        - tickets
+      responses:
+        '200':
+          description: aaa
+definitions:
+
+  ##############################################################################
+  # Address
+  ##############################################################################
+  Address:
+    type: object
+    properties:
+      country_code:
+        type: string
+        format: date-time
+        description: The country code of the venue's address.
+      created_at:
+        type: string
+        format: date-time
+        description: The creation time of this address.
+      extended_address:
+        type: string
+        description: Often seen as 'Street Address Line 2'.  Typically an apartment number, suite number, etc.
+      label:
+        type: string
+        description: A shorthand label used to identify this address by the creator.  'Home', 'Office', etc. is common.
+      latitude:
+        type: number
+        format: float
+        description: The latitude of this address.
+      location:
+        type: string
+        description: A shorthand description of the address (typically City, State).
+      locality:
+        type: string
+        description:
+          Typically the City (when in US) or otherwise the locality of the address (as used in many globally compatible postal address schemas).
+      longitude:
+        type: number
+        format: float
+        description: The longitude of this address.
+      postal_code:
+        type: string
+        description: The postal code of zip code of the address.
+      street_address:
+        type: string
+        description: The street address of the address.
+      region:
+        type: string
+        description: Typically the State (when in US) or otherwise the region of the address.
+
+  ##############################################################################
+  # Category
+  ##############################################################################
+  Category:
+    type: object
+
+  EventConfiguration:
+    type: object
+
+  ##############################################################################
+  # EventsResponse
+  ##############################################################################
+  EventsResponse:
+    type: object
+    properties:
+      current_page:
+        type: integer
+        description: Current page of pagination.
+      per_page:
+        type: integer
+        description: Items per page of pagination.
+      events:
+        type: array
+        description: The actual events.
+        items:
+          $ref: '#/definitions/Event'
+
+  Event:
+    type: object
+    properties:
+      available_count:
+        type: integer
+        description: The number of available tickets (not ticket groups).
+      updated_at:
+        type: string
+        format: iso8601
+        description: The time of last update on the this event.
+      owned_by_office:
+        type: boolean
+        description: Does your office own tickets for this event.
+      url:
+        type: string
+        description: The url for this resource.
+      products_count:
+        type: integer
+        description: No idea.
+      configuration:
+        $ref: '#/definitions/EventConfiguration'
+      long_term_popularity_score:
+        type: number
+        format: float
+        description: Deprecated.
+      products_eticket_count:
+        type: integer
+        description: The number of tickets with format of Eticket.
+      state:
+        type: string
+        description: >-
+          The state of the event.  Can be shown, canceled, postponed or
+          ignored.  As necessary games (like a game 7) can end up ignored if
+          they don't become necessary.
+      venue:
+        $ref: '#/definitions/Venue'
+      name:
+        type: string
+        description: The name of the event.
+      performances:
+        type: array
+        description: >-
+          The performances occuring at this event.  Most events consist of one
+          performance, but festivals for example will have multiple.
+        items:
+          $ref: '#/definitions/Performance'
+      popularity_score:
+        type: number
+        format: float
+        description:
+          A relative score of how popular this event is compared to others in
+          the API.
+      category:
+        $ref: '#/definitions/Category'
+      id:
+        type: integer
+        description: The id of the event.
+      stubhub_id:
+        type: integer
+        description: The corresponding eventId in the StubHub API.
+      notes:
+        type: string
+        description: >-
+          Broker provided notes for the tickets.  Often include entry
+          restrictions, additional info on the tickets, etc.
+      occurs_at:
+        type: string
+        format: iso8601
+        description: >-
+          The time the event occurs.  This time is NOT UTC.  The time is in
+          whatever timezone the venue is located in.  Disregard the 'Z'.
+  Performance:
+    type: object
+  Venue:
+    type: object
+    properties:
+      updated_at:
+        type: string
+        format: iso8601
+        description: The time of last update for this venue.
+      address:
+        $ref: '#/definitions/Address'
+      location:
+        type: string
+        description: 'The "city, state" summary of this venue''s location.'
+      url:
+        type: string
+        description: The url for this resource.
+      keywords:
+        type: string
+        description: Deprecated.
+      slug_url:
+        type: string
+        description: A human friendly / SEO friendly url for this venue.
+      slug:
+        type: string
+        description: A human friendly / SEO friendly unique id for this venue.
+      upcoming_events:
+        type: object
+        description: An object containing the first (closest to now) and last (furthest in the future) event dates for events scheduled at this venue.
+      name:
+        type: string
+        description: The name of the venue.
+      meta:
+        type: object
+        description: Meta content for the venue such as text descriptions and imagery.
+      country_code:
+        type: string
+        format: ISO 3166
+        description: The country code of the venue's address.
+      popularity_score:
+        type: number
+        format: float
+        description: The relative popularity of this venue.
+      id:
+        type: number
+        format: int32
+        description: The id of the venue.

@@ -1,3 +1,21 @@
+# Tevo API Docs
+
+## Installation
+
+1. `npm install`
+2. `npm run build`
+
+## Running in WATCH mode for developing
+
+1. Run `npm run serve`.
+
+
+
+
+
+
+
+
 # Swagger UI
 
 [![Build Status](https://travis-ci.org/swagger-api/swagger-ui.svg?branch=master)](https://travis-ci.org/swagger-api/swagger-ui)
