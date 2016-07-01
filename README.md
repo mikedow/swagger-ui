@@ -9,6 +9,9 @@
 
 1. Run `npm run serve`.
 
+## About
+
+1. All CSS / style differences are done via inline styles.  Don't bother changing the less/css files.
 
 
 
